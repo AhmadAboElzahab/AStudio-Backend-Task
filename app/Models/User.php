@@ -7,7 +7,8 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Notifications\Notifiable;
 use Tymon\JWTAuth\Contracts\JWTSubject;
 use Illuminate\Foundation\Auth\User as Authenticatable;
-
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class User extends Authenticatable implements JWTSubject
 {
@@ -19,9 +20,7 @@ class User extends Authenticatable implements JWTSubject
      * @var array<int, string>
      */
     protected $fillable = [
-        'name',
-        'email',
-        'password',
+        'first_name', 'last_name', 'date_of_birth', 'gender', 'email', 'password',
     ];
 
     /**
@@ -33,7 +32,15 @@ class User extends Authenticatable implements JWTSubject
         'password',
         'remember_token',
     ];
+    public function projects(): BelongsToMany
+    {
+        return $this->belongsToMany(Project::class);
+    }
 
+    public function timesheets(): HasMany
+    {
+        return $this->hasMany(Timesheet::class);
+    }
     /**
      * Get the attributes that should be cast.
      *

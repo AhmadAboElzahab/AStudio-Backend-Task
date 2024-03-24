@@ -57,5 +57,16 @@ class AuthController extends Controller
         ]);
     }
 
+    public function profile(Request $request)
+    {
+        $user = $request->user();
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Profile information retrieved successfully',
+            'user' => $user,
+        ]);
+    }
+
 
 }
