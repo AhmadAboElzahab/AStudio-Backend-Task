@@ -16,7 +16,6 @@ class CreateTimesheetsTable extends Migration
             $table->integer('hours');
             $table->timestamps();
 
-            // Define foreign key constraints
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->foreign('project_id')->references('id')->on('projects')->onDelete('cascade');
         });
