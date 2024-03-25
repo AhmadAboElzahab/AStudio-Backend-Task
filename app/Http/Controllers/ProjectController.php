@@ -31,10 +31,10 @@ class ProjectController extends Controller
             ], 404);
         }
 
-        // Delete related timesheets
+       
         Timesheet::where('project_id', $project->id)->delete();
 
-        // Delete the project
+      
         $project->delete();
 
         return response()->json([

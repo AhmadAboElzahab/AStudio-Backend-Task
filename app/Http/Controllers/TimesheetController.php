@@ -59,7 +59,7 @@ class TimesheetController extends Controller
     return response()->json([
         'status' => 'success',
         'message' => 'Time sheets retrieved successfully',
-        'time_sheets' => $filteredTimeSheets->values()->all(), // Convert to array and re-index
+        'time_sheets' => $filteredTimeSheets->values()->all(), 
     ], 200);
 }
     public function createTimesheet(Request $request)
