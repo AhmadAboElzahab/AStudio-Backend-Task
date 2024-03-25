@@ -28,7 +28,7 @@ Route::middleware('auth:api')->group(function () {
    Route::post('/timesheets',  [TimesheetController::class, 'createTimesheet']);
    Route::post('/timesheets/delete',  [TimesheetController::class, 'deleteTimesheet']);
    Route::post('/timesheets/update',  [TimesheetController::class, 'updateTimesheet']);
-   Route::get('/timesheets',  [TimesheetController::class, 'getUserTimesheets']);
+   Route::get('/timesheets',  [TimesheetController::class, 'getAllTimesheets']);
    Route::get('/timesheets/{id}', [TimesheetController::class, 'getTimesheetById']);
 
 

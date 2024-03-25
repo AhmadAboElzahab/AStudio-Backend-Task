@@ -24,23 +24,44 @@ class TimesheetController extends Controller
             return response()->json(['error' => 'Timesheet not found'], 404);
         }
     }
-      public function getUserTimesheets()
-    {
-        
-        try {
-            if (!Auth::check()) {
-                return response()->json(['error' => 'User not authenticated'], 401);
-            }
-            $user = Auth::user();
-            $timesheets = $user->timesheets()->get();
-            return response()->json([
-                'status' => 'success',
-                'timesheets' => $timesheets,
-            ], 200);
-        } catch (\Exception $e) {
-            return response()->json(['error' => 'Failed to retrieve timesheets'], 500);
+    public function getAllTimeSheets(Request $request)
+{
+    $timeSheets = TimeSheet::all();
+
+    $filteredTimeSheets = $timeSheets->filter(function ($timeSheet) use ($request) {
+        if ($request->has('project_id') && $timeSheet->project_id != $request->input('project_id')) {
+            return false;
         }
+        if ($request->has('user_id') && $timeSheet->user_id != $request->input('user_id')) {
+            return false;
+        }
+        if ($request->has('task_name') && $timeSheet->task_name != $request->input('task_name')) {
+            return false;
+        }
+        if ($request->has('date') && $timeSheet->date != $request->input('date')) {
+            return false;
+        }
+        if ($request->has('hours') && $timeSheet->hours != $request->input('hours')) {
+            return false;
+        }
+
+        return true; 
+    });
+
+    if ($filteredTimeSheets->isEmpty()) {
+        return response()->json([
+            'status' => 'success',
+            'message' => 'No time sheets found matching the specified filters',
+            'time_sheets' => [],
+        ], 200);
     }
+
+    return response()->json([
+        'status' => 'success',
+        'message' => 'Time sheets retrieved successfully',
+        'time_sheets' => $filteredTimeSheets->values()->all(), // Convert to array and re-index
+    ], 200);
+}
     public function createTimesheet(Request $request)
 {
     if (!Auth::check()) {
