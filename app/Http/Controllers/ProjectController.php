@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Dotenv\Util\Str;
 use Illuminate\Http\Request;
 use App\Models\Project;
 use App\Models\Timesheet;
@@ -82,17 +83,45 @@ class ProjectController extends Controller
             'message' => 'Project retrieved successfully',
             'project' => $project,
         ]);
-    }
-     public function getAllProjects()
+    }public function getAllProjects(Request $request)
     {
         $projects = Project::all();
-
+    
+        $filteredProjects = $projects->filter(function ($project) use ($request) {
+            if ($request->input('name') && $project->name !== $request->input('name')) {
+                return false;
+            }
+            if ($request->input('department') && $project->department !== $request->input('department')) {
+                return false;
+            }
+            if ($request->input('status') && $project->status !== $request->input('status')) {
+                return false;
+            }
+            if ($request->input('start_date') && $project->start_date !== $request->input('start_date')) {
+                return false;
+            }
+            if ($request->input('end_date') && $project->end_date !== $request->input('end_date')) {
+                return false;
+            }
+    
+            return true; 
+        });
+    
+        if ($filteredProjects->isEmpty()) {
+            return response()->json([
+                'status' => 'success',
+                'message' => 'No projects found matching the specified filters',
+                'projects' => [],
+            ], 200);
+        }
+    
         return response()->json([
             'status' => 'success',
             'message' => 'Projects retrieved successfully',
-            'projects' => $projects,
-        ]);
+            'projects' => $filteredProjects->values()->all(), // Convert to array and re-index
+        ], 200);
     }
+    
     public function createProject(Request $request)
     {
         $validator = Validator::make($request->all(), [
