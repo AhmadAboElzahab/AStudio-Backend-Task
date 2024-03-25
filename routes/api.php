@@ -14,6 +14,7 @@ Route::middleware('auth:api')->group(function () {
 
     Route::post('/user/update',[UserController::class, 'updateUser']);
     Route::post('/user/delete',[UserController::class, 'deleteUser']);
+    Route::get('/user',[UserController::class, 'getAllUsers']);
     
 
     Route::post('/projects/assign',[ProjectUserController::class, 'assignUserToProject']);

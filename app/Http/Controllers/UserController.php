@@ -2,12 +2,54 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
+use Exception;
 use Illuminate\Support\Facades\Auth;
 
 use Illuminate\Http\Request;
 
 class UserController extends Controller
 {
+    
+    public function getAllUsers(Request $request)
+    {
+        $allUsers = User::all();
+        $filteredUsers = $allUsers->filter(function ($user) use ($request) {
+            if ($request->input('first_name') && $user->first_name != $request->input('first_name')) {
+                return false;
+            }
+            if ($request->input('gender') && $user->gender != $request->input('gender')) {
+                return false;
+            }
+            if ($request->input('last_name') && $user->last_name != $request->input('last_name')) {
+                return false;
+            }
+            if ($request->input('date') && $user->date_of_birth != $request->input('date')) {
+                return false;
+            }
+            if ($request->input('email') && $user->email != $request->input('email')) {
+                return false;
+            }
+            return true; 
+        });
+    
+        if ($filteredUsers->isEmpty()) {
+            return response()->json([
+                'status' => 'success',
+                'message' => 'No users found matching the specified filters',
+                'users' => [],
+            ], 200);
+        }
+    
+        return response()->json([
+            'status' => 'success',
+            'message' => 'users retrieved successfully',
+            'users' => $filteredUsers->values(), 
+        ], 200);
+    }
+    
+    
+
     public function deleteUser()
 {
     if (!Auth::check()) {
